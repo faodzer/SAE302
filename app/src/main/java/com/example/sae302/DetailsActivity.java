@@ -96,7 +96,7 @@ public class DetailsActivity extends AppCompatActivity {
      * @param codeTechnique Identifiant unique de la ligne pour l'API.
      */
     private void chargerHoraires(String codeTechnique) {
-        // Requête demandant jusqu'à 100 enregistrements pour couvrir les deux directions de la ligne
+        // Requête demandant jusqu'à 100 enregistrements pour couvrir les deux directions
         ApiClient.getService().getPassagesTempsReel(
                 "prochains-passages-des-lignes-de-bus-du-reseau-star-en-temps-reel",
                 "nomcourtligne:\"" + codeTechnique + "\"",
