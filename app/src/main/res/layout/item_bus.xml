@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Le numéro de ligne (ex: C6) -->
+        <TextView
+            android:id="@+id/textLigneNumero"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/purple_500"
+            android:gravity="center"
+            android:text="C1"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Le nom de la ligne -->
+        <TextView
+            android:id="@+id/textLigneNom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="Nom complet de la ligne de bus"
+            android:textSize="16sp"
+            android:textColor="#333333" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

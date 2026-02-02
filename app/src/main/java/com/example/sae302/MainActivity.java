@@ -11,125 +11,128 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-// "extends AppCompatActivity" signifie que c'est un écran android standard
+/**
+ * MainActivity
+ * ------------
+ * Cette activité sert d'écran de démarrage (Splash Screen) à l'application.
+ * Ses rôles principaux sont :
+ * 1. Afficher le logo de l'application pendant un temps minimum.
+ * 2. Vérifier la présence d'une connexion internet avant de permettre l'accès aux données.
+ * 3. Assurer la transition vers l'écran principal une fois les conditions remplies.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    // Le Handler permet de faire attendre les 3sec.
-    // Looper.getMainLooper() permet d'exécuter sur l'interface graphique principal.
+    // Le Handler permet de planifier des actions dans le futur sur le thread principal (UI Thread)
     private final Handler planificateur = new Handler(Looper.getMainLooper());
 
-    // Runnable est une "Tâche" que l'on éxecute plus tard.
-    // C'est ici qu'on va mettre notre logique de vérification.
+    // Runnable définit la "tâche" de vérification qui sera exécutée de manière répétée
     private Runnable tacheVerificationReseau;
 
-    // pour que le logo s'affiche au moins 3000ms (3 secondes)
+    // Constante définissant la durée minimale d'affichage du logo (3000 ms = 3 secondes)
     private static final long TEMPS_ATTENTE_LOGO = 3000;
 
-    // Variable qui stocke l'heure a la quelle l'app a démarré
+    // Variable stockant le timestamp précis du lancement de l'activité
     private long topDepartChrono;
 
-    // --- LE DÉMARRAGE DE L'ACTIVITÉ ---
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // On sélectionne le XML : on affiche le XML à l'écran (le logo)
+        // Liaison avec le layout XML activity_main (contenant le logo)
         setContentView(R.layout.activity_main);
 
-        // On déclenche le chronomètre au moment précis où l'écran se crée
-        // System.currentTimeMillis() donne l'heure actuelle en millisecondes
+        // Enregistrement de l'heure de démarrage pour calculer le temps d'affichage
         topDepartChrono = System.currentTimeMillis();
 
-        // DÉFINITION DE LA TÂCHE
-        // Attention : Ici on DÉFINIT la tâche, on ne la lance pas encore.
+        /**
+         * Définition de la logique de vérification réseau.
+         * Cette tâche est encapsulée dans un Runnable pour pouvoir être planifiée ou annulée.
+         */
         tacheVerificationReseau = new Runnable() {
             @Override
             public void run() {
-                // 1. On calcule combien de temps s'est écoulé depuis le lancement
+                // Calcul du temps écoulé depuis l'ouverture de l'application
                 long tempsEcoule = System.currentTimeMillis() - topDepartChrono;
 
-                // 2. On vérifie le "billet d'entrée" (Internet)
+                // Vérification de l'état de la connexion internet
                 if (estConnecteAuReseau()) {
-                    // CAS A : Il y a internet !
+                    // --- CAS A : CONNEXION ÉTABLIE ---
 
                     if (tempsEcoule >= TEMPS_ATTENTE_LOGO) {
-                        // Si ça fait déjà plus de 3 secondes qu'on attend par sur PageAcceuil
+                        // Si le temps d'attente minimal est dépassé, on change d'écran immédiatement
                         lancerPageAccueil();
                     } else {
-                        // Si ça fait moins de 3 secondes (ex: connexion ultra rapide en 0.5s)
-                        // On calcule le temps qu'il reste à attendre
+                        // Si la connexion est trouvée très vite, on attend la fin du délai des 3 secondes
                         long tempsRestant = TEMPS_ATTENTE_LOGO - tempsEcoule;
-
-                        // On dit au planificateur : "Lance la page d'accueil dans X tempsRestant"
                         planificateur.postDelayed(MainActivity.this::lancerPageAccueil, tempsRestant);
                     }
                 } else {
-                    // CAS B : Pas d'internet !
+                    // --- CAS B : ABSENCE DE CONNEXION ---
 
-                    // On affiche un petit message temporaire (Toast) en bas de l'écran
+                    // Information utilisateur via un message éphémère (Toast)
                     Toast.makeText(MainActivity.this, "En attente de connexion...", Toast.LENGTH_SHORT).show();
 
-                    // LA BOUCLE : On dit au planificateur "Relance MOI-MÊME (this) dans 3 secondes"
-                    // C'est ça qui crée la boucle de vérification tant qu'il n'y a pas de réseau.
+                    // RELANCE DE LA VÉRIFICATION : L'action se rappelle elle-même toutes les 3 secondes
+                    // Cela crée une boucle de surveillance active du réseau.
                     planificateur.postDelayed(this, 3000);
                 }
             }
         };
     }
 
-    // --- METHODE DE NAVIGATION (Ouvrir la porte) ---
+    /**
+     * Gère la transition sécurisée vers l'activité principale (PageAccueilActivity).
+     */
     private void lancerPageAccueil() {
-        // Sécurité : Si l'activité est déjà en train de se fermer, on arrête tout pour éviter un crash
+        // Sécurité : on n'effectue pas la transition si l'activité est en train d'être détruite
         if (isFinishing()) return;
 
         try {
-            // L'Intent est une "Intention" de changer d'écran.
-            // On part de "MainActivity.this" vers "PageAccueilActivity.class"
-            // (Assure-toi d'avoir bien renommé ton fichier en PageAccueilActivity !)
+            // Création d'un Intent pour basculer vers le nouvel écran
             Intent intent = new Intent(MainActivity.this, PageAccueilActivity.class);
             startActivity(intent);
 
-            // finish() est CRUCIAL : cela détruit l'écran de chargement.
-            // Si l'utilisateur fait "Retour" depuis l'accueil, il quittera l'appli au lieu de revenir sur le logo.
+            // Appel de finish() pour retirer MainActivity de la pile d'activités.
+            // Ainsi, un appui sur le bouton "Retour" quittera l'application directement.
             finish();
         } catch (Exception e) {
-            // Si quelque chose plante (ex: nom de fichier incorrect), on l'écrit dans les logs (Logcat)
+            // Journalisation de l'erreur dans le Logcat en cas d'échec de la transition
             Log.e("SAE302_ERROR", "Erreur lors du lancement", e);
             Toast.makeText(this, "Erreur de transition", Toast.LENGTH_LONG).show();
         }
     }
 
-    // --- METHODE TECHNIQUE (Vérifier le badge) ---
+    /**
+     * Interroge les services système Android pour connaître l'état de la connectivité.
+     * @return boolean Vrai si le réseau est disponible et connecté (Wi-Fi ou Données mobiles).
+     */
     private boolean estConnecteAuReseau() {
-        // On demande au système Android le service qui gère les connexions
         ConnectivityManager gestionnaireReseau = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        // Si le service n'existe pas (rare), on considère qu'il n'y a pas de réseau
         if (gestionnaireReseau == null) return false;
 
-        // On récupère les infos du réseau actif (WiFi ou 4G)
+        // Récupération de l'état du réseau actif
         NetworkInfo infoReseau = gestionnaireReseau.getActiveNetworkInfo();
 
-        // On retourne VRAI si on a des infos ET qu'elles disent "Connecté"
         return infoReseau != null && infoReseau.isConnected();
     }
 
-    // --- CYCLE DE VIE (Quand l'utilisateur quitte/revient sur l'appli) ---
+    // --- GESTION DU CYCLE DE VIE ---
 
     @Override
     protected void onResume() {
         super.onResume();
-        // QUAND L'ÉCRAN DEVIENT VISIBLE :
-        // On lance la tâche de vérification immédiatement.
+        // Lorsque l'application revient au premier plan, on lance la vérification réseau
         planificateur.post(tacheVerificationReseau);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // QUAND L'ÉCRAN N'EST PLUS VISIBLE (L'utilisateur a mis l'appli en fond) :
-        // On supprime toutes les tâches prévues.
-        // C'est très important : ça évite que la boucle continue de tourner et de vider la batterie pour rien.
+        /**
+         * Lorsque l'activité n'est plus visible, on stoppe impérativement les tâches planifiées.
+         * Cela évite des fuites de mémoire et une consommation inutile de batterie en arrière-plan.
+         */
         planificateur.removeCallbacksAndMessages(null);
     }
 }
