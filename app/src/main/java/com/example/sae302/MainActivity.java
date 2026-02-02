@@ -96,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
             // Ainsi, un appui sur le bouton "Retour" quittera l'application directement.
             finish();
         } catch (Exception e) {
-            // Journalisation de l'erreur dans le Logcat en cas d'échec de la transition
-            Log.e("SAE302_ERROR", "Erreur lors du lancement", e);
             Toast.makeText(this, "Erreur de transition", Toast.LENGTH_LONG).show();
         }
     }
