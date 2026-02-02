@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * 2. Vérifier la présence d'une connexion internet avant de permettre l'accès aux données.
  * 3. Assurer la transition vers l'écran principal une fois les conditions remplies.
  */
+
 public class MainActivity extends AppCompatActivity {
 
     // Le Handler permet de planifier des actions dans le futur sur le thread principal (UI Thread)

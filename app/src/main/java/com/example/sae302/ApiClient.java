@@ -25,14 +25,10 @@ public class ApiClient {
      */
     public static StarApiService getService() {
         if (retrofit == null) {
-            // Configuration de l'intercepteur de journalisation (Logging)
-            // Permet de voir le détail des requêtes et réponses dans le Logcat (utile pour le débogage)
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            // Création du client HTTP avec l'intercepteur ajouté
+
+            // Création du client HTTP
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(logging)
                     .build();
 
             // Configuration de l'instance Retrofit
