@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Vérification de l'état de la connexion internet
                 if (estConnecteAuReseau()) {
-                    // --- CAS A : CONNEXION ÉTABLIE ---
+                    //  CONNEXION ÉTABLIE
 
                     if (tempsEcoule >= TEMPS_ATTENTE_LOGO) {
                         // Si le temps d'attente minimal est dépassé, on change d'écran immédiatement
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                         planificateur.postDelayed(MainActivity.this::lancerPageAccueil, tempsRestant);
                     }
                 } else {
-                    // --- CAS B : ABSENCE DE CONNEXION ---
+                    //  ABSENCE DE CONNEXION
 
                     // Information utilisateur via un message éphémère (Toast)
                     Toast.makeText(MainActivity.this, "En attente de connexion...", Toast.LENGTH_SHORT).show();
