@@ -29,6 +29,7 @@ import retrofit2.Response;
  * Elle permet de visualiser les horaires en temps réel, de filtrer par direction
  * et d'afficher les alertes de trafic (incidents) en cours.
  */
+
 public class DetailsActivity extends AppCompatActivity {
 
     // --- VUES (Interface Graphique) ---
@@ -42,7 +43,7 @@ public class DetailsActivity extends AppCompatActivity {
     // Boutons permettant de choisir le terminus (direction)
     private Button btnDirection1, btnDirection2;
 
-    // --- DONNÉES ---
+
     // Liste temporaire pour stocker la totalité des horaires récupérés depuis l'API
     private List<ModeleHoraire.Record> listeCompleteDesPassages;
     private String destination1 = null;
@@ -87,9 +88,6 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    // ==========================================
-    // PARTIE 1 : LES HORAIRES & DIRECTIONS
-    // ==========================================
 
     /**
      * Interroge l'API pour récupérer les passages en temps réel de la ligne.
@@ -212,9 +210,9 @@ public class DetailsActivity extends AppCompatActivity {
         tvPasDeBus.setVisibility(vide ? View.VISIBLE : View.GONE);
     }
 
-    // ==========================================
-    // PARTIE 2 : LES ALERTES (Incidents)
-    // ==========================================
+
+    // LES ALERTES
+
 
     /**
      * Vérifie si des incidents de trafic concernent actuellement la ligne.
